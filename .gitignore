@@ -1,0 +1,10 @@
+*.cache/*
+*.ipynb_checkpoints/*
+*~
+*/functional/*
+*.ipynb
+*.pyc
+test_inputs/*
+*/__pycache__/*
+.mypy_cache
+*.org
