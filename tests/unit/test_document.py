@@ -55,70 +55,28 @@ def mock_table(request):
     return _mock_table
 
 
-@pytest.fixture(params=[True, False])
-def key_found(request):
-    return request.param
-
-
-def test_document_init(mock_finder):
-    document = Document(Mock(), mock_finder)
-
-    assert 'label' in document.dispatcher
-    assert 'firstrow' in document.dispatcher
-    assert 'header' in document.dispatcher
+def test_document_init():
+    document = Document(Mock(), Mock())
     assert document.result == {}
 
 
-@pytest.mark.parametrize('key, is_callable', [
-    ('label', True),
-    ('firstrow', True),
-    ('header', True),
-    ('novascotia', False),
-    ('alberta', False),
-    ('saskatewan', False)
-])
-def test_get_build_and_find_fns(key, is_callable, mock_finder):
-    document = Document(Mock(), mock_finder)
-    f1, f2 = document._get_build_and_find_fns(key)
+# @pytest.mark.skip(reason="refactoring")
+def test_document_build(mock_schema, mock_finder):
+    if mock_schema[0].find_method == 'label':
+        build_fn = '_build_from_label'
+    else:
+        build_fn = '_build_from_table_tag'
 
-    assert callable(f1) == is_callable
-    assert callable(f2) == is_callable
-
-
-def test_document_build(mock_schema, key_found, mock_finder):
-    with patch.object(Document, '_get_build_and_find_fns') as mock_func:
-        mock_build_fn, mock_find_by_fn = Mock(), Mock()
-        if key_found:
-            mock_func.return_value = mock_build_fn, mock_find_by_fn
-            mbfn_call_args = call(mock_find_by_fn, mock_schema[0])
-        else:
-            mock_func.return_value = None, None
-            mbfn_call_args = None
-
+    with patch.object(Document, build_fn) as mock_func:
         document = Document(mock_schema, mock_finder)
         document.build()
-
-        assert mock_build_fn.call_args == mbfn_call_args
-
-
-# @pytest.mark.only_this
-# def test_document_save():
-#     mock_db = Mock()
-#     mock_db.insert_one.return_value = None
-
-#     document = Document(Mock(), Mock(), mock_db)
-#     document._result = {'a': 1}
-#     document.save()
-
-#     assert mock_db.insert_one.call_count == 1
-#     assert mock_db.insert_one.call_args == call(document._result)
+        assert mock_func.call_count == 1
 
 
 @pytest.mark.parametrize('mff_rv', [
     Mock(text='text'), None
 ])
 def test_document_build_from_label(mff_rv, mock_schema, mock_finder):
-    # maybe add support for more than 1 record
     mock_find_by_fn = Mock()
     mock_record = mock_schema[0].records[0]
     mock_finder.find.return_value = mff_rv
@@ -138,8 +96,8 @@ def test_document_build_from_label(mff_rv, mock_schema, mock_finder):
     (None, '_fill_none'),
     ('a table tag', '_build_from_table')
 ])
-def test_document_build_from_table_tag(
-        table, table_tag, doc_func, mock_schema, mock_finder):
+def test_document_build_from_table_tag(table, table_tag, doc_func, mock_schema,
+                                       mock_finder):
     mock_find_by_fn = Mock()
     records = mock_schema[0].records
     ref_pat = mock_schema[0].ref_pat
@@ -167,8 +125,7 @@ def test_document_fill_none(mock_finder, mock_record):
         assert document._result[record.key] is None
 
 
-def test_document_build_from_table(
-        mock_finder, mock_record, mock_table):
+def test_document_build_from_table(mock_finder, mock_record, mock_table):
     document = Document(Mock(), mock_finder)
     document._build_from_table(mock_record, mock_table)
     assert mock_table.find_match.call_count == 1

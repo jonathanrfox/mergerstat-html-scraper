@@ -1,12 +1,6 @@
 from datetime import datetime
 import re
-from typing import Optional, Union, Tuple
 
-
-# consider different levels of cleaning
-# -don't want to strip decimal points
-# -don't want some long strings formatted
-# -don't want datetime to be messed up
 
 UNITS = {
     'trillions': 1000000000000,
@@ -22,18 +16,18 @@ UNITS = {
 class Format(object):
 
     @staticmethod
-    def as_is(s: str) -> str:
+    def as_is(s):
         return re.sub(r'[\n]', '', s)
 
     @staticmethod
-    def as_str(s: str) -> str:
+    def as_str(s):
         s = s.lower().strip()
         s = re.sub(r'[,\n]', '', s)
         s = re.sub(r'[\s/]', '_', s)
         return s
 
     @staticmethod
-    def as_int(s: str) -> Union[int, str]:
+    def as_int(s):
         s = re.sub(r'[^-\d]', '', s.strip())
         try:
             return int(s)
@@ -41,7 +35,7 @@ class Format(object):
             return None
 
     @staticmethod
-    def as_float(s: str) -> Union[float, str]:
+    def as_float(s):
         s = re.sub(r'[^-.%\d]', '', s.strip())
         divisor = 1
         if '%' in s:
@@ -53,12 +47,12 @@ class Format(object):
             return None
 
     @staticmethod
-    def as_currency(s: str) -> str:
+    def as_currency(s):
         s = re.sub(r'[^-$.\d]', '', s.strip())
         return s if s else None
 
     @staticmethod
-    def as_datetime(s: str) -> str:
+    def as_datetime(s):
         s = re.sub(r'[\n]', '', s.strip())
         try:
             return (datetime
@@ -68,10 +62,10 @@ class Format(object):
             return None
 
     @staticmethod
-    def as_units(s: str) -> Tuple[Optional[int], Optional[str], Optional[str]]:
+    def as_units(s):
         s = re.sub(r'[\n]', '', s.strip())
-        if s == '':
-            s = '(' + s + ')'
+        if not s:
+            return None, None, None
         matched = re.match(r'\(([A-Z][a-z]+)?\s?([A-Z]{1,4})?\s?(.)?\)', s)
         denom, country, currency = matched.groups()
         try:

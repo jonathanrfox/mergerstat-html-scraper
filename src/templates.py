@@ -12,8 +12,8 @@ class RecordTemplate(NamedTuple):
 
 
 # find_method: string indicating which find method to use
-# ref_pat: pattern used to find starting point for labels
-# labels: a tuple of LabelTemplates
+# ref_pat: pattern used to find starting point for records
+# records: a tuple of RecordTemplates
 
 class SchemaTemplate(NamedTuple):
     find_method: str
