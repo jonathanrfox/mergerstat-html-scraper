@@ -11,11 +11,9 @@ def find_tag_by_label(root_tag, label_pat, tag_name='span'):
                .find_next(text=label_pat)
                .find_next(tag_name))
         if root_tags_match(root_tag, tag):
-            print('tags match')
             return tag.extract()
     except AttributeError:
         pass
-    print('tags don\'t match')
 
 
 def find_table_by_first_row(root_tag, first_row_pat):

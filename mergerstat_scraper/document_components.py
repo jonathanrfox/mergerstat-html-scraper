@@ -1,4 +1,3 @@
-from abc import ABC, abstractmethod
 import re
 
 from .table import Table
@@ -14,7 +13,6 @@ def fill_none(records):
 def extract_table(raw_table, records):
     if not raw_table:
         return fill_none(records)
-
     result = {}
     table = Table(raw_table)
     for key, pat, fmt, in_col, out_col in records:
