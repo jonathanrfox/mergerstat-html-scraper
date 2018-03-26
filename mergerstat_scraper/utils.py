@@ -35,15 +35,10 @@ def as_int(s):
 
 
 def as_float(s):
-    ''' converts percentages to decimal.
-    returns only dashes, periods, and numbers '''
-    s = re.sub(r'[^-.%\d]', '', s.strip())
-    divisor = 1
-    if '%' in s:
-        s = s.replace('%', '')
-        divisor = 100
+    ''' returns dashes, periods, and numberic values '''
+    s = re.sub(r'[^-.\d]', '', s.strip())
     try:
-        return float(s) / divisor
+        return float(s)
     except ValueError:
         return None
 

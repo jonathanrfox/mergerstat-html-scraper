@@ -2,6 +2,7 @@ from pprint import pprint
 import sys
 
 from mergerstat_scraper import scrape
+from mergerstat_scraper.document_components import *
 
 
 def main():
@@ -9,7 +10,15 @@ def main():
     if len(sys.argv) >= 2:
         filename = sys.argv[1]
 
-    for document in scrape(filename):
+    components = dict(
+        metadata=DocumentMetadata,
+        trans_summary=TransactionSummary,
+        buyer_details=BuyerDetails,
+        seller_details=SellerDetails,
+        target_details=TargetDetails
+    )
+
+    for document in scrape(filename, **components):
         pprint(document)
 
 

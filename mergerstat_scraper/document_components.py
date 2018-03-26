@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 import re
 
 from .table import Table
@@ -24,7 +25,14 @@ def extract_table(raw_table, records):
     return result
 
 
-class DocumentMetaData(object):
+class DocumentComponent(ABC):
+    @classmethod
+    @abstractmethod
+    def extract(cls, *args, **kwargs):
+        raise NotImplementedError('Need to implement `extract`.')
+
+
+class DocumentMetadata(DocumentComponent):
 
     RECORDS = (
         RecordTemplate(
@@ -61,7 +69,7 @@ class DocumentMetaData(object):
         return result
 
 
-class BuyerDetails(object):
+class BuyerDetails(DocumentComponent):
 
     PATTERN = re.compile(r'.*BUYER\sDETAILS.*')
     RECORDS = (
@@ -93,7 +101,7 @@ class BuyerDetails(object):
         return extract_table(raw_table, cls.RECORDS)
 
 
-class FinancialSummary(object):
+class FinancialSummary(DocumentComponent):
 
     PATTERN = re.compile(r'.*FINANCIAL\sSUMMARY.*')
     RECORDS = (
@@ -150,7 +158,7 @@ class FinancialSummary(object):
         return extract_table(raw_table, cls.RECORDS)
 
 
-class LatestTwelveMonths(object):
+class LatestTwelveMonths(DocumentComponent):
 
     PATTERN = re.compile(r'.*LATEST\sTWELVE\sMONTHS.*')
     RECORDS = (
@@ -178,7 +186,7 @@ class LatestTwelveMonths(object):
         return extract_table(raw_table, cls.RECORDS)
 
 
-class SellerDetails(object):
+class SellerDetails(DocumentComponent):
 
     PATTERN = re.compile(r'.*SELLER\sDETAILS.*')
     RECORDS = (
@@ -195,7 +203,7 @@ class SellerDetails(object):
         return extract_table(raw_table, cls.RECORDS)
 
 
-class TargetDetails(object):
+class TargetDetails(DocumentComponent):
 
     PATTERN = re.compile(r'.*TARGET\sDETAILS.*')
     RECORDS = (
@@ -222,7 +230,7 @@ class TargetDetails(object):
         return extract_table(raw_table, cls.RECORDS)
 
 
-class TransactionSummary(object):
+class TransactionSummary(DocumentComponent):
 
     PATTERN = re.compile(r'.*TRANSACTION\sSUMMARY.*')
     RECORDS = (
