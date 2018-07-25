@@ -1,0 +1,75 @@
+#+TITLE: Mergerstat HTML Scraper
+#+OPTIONS: toc:nil
+
+This package handles the extraction of data from Mergerstat HTML
+documents.
+
+* Usage
+
+There is a single function =scrape= that takes as parameters a
+filename and a dict of document components and returns a generator
+yielding a dict with extracted data. The filename should be a path to
+an html file. The dict of components should have keys that describe
+the component and values that inherit from the abstract class
+=DocumentComponent= and implement an =extract= method. There are few
+classes in =document_components.py= that target main parts of the
+document. See =example.py= for a working example.
+
+* List of currently supported data points
+
+- Meta
+  - Target
+  - Buyer
+  - Announce date
+  - Deal No.
+
+- Buyer Details
+  - Legal Status
+  - Primary Industry
+  - Exchange
+  - Ticker
+
+- Financial Summary
+  - Total Invested Capital / EBITDA
+  - Total Assets
+  - Cash and Marketable Securities
+  - Current Long Term Debt
+  - Long Term Debt
+  - Book Value
+  - Share Price 30 Days Prior
+  - Share Price 5 Days Prior
+  - Share Price 1 Day Prior
+
+- Latest Twelve Months
+  - Revenue
+  - Net Income
+
+- Seller Details
+  - Ticker
+
+- Target Details
+  - Country
+  - Exchange
+  - Industry
+
+- Transaction Summary
+  - Deal Type
+  - Purpose
+  - Attitude
+  - Transaction Type
+  - Cancelled Date
+  - Closing Date
+  - Deal Description
+  - Transaction Notes
+  - Method of Payment
+  - Premium Offered
+  - Percent Sought
+  - Share Price
+  - Original Offer Price
+  - Multiple of Book Value
+  - Stock Payment
+  - Cash Payment
+  - Liabilities Assumed
+  - Total Invested Capital
+  - Base Equity Price
+  - Seller Breakup Fee
